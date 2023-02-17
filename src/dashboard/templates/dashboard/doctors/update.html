@@ -1,0 +1,55 @@
+{% extends "dashboard/base.html" %}
+{% load i18n %}
+{% load static %}
+{% block extra_css %}
+<style xmlns="http://www.w3.org/1999/html">
+</style>
+{% endblock %}
+{% block page_title %}
+Doctor Update
+{% endblock %}
+{% block content %}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Update Doctor</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Library</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <h4 class="card-title">Doctor Info</h4>
+                        <div class="form-group">
+                            {{form.as_p}}
+                        </div>
+
+                    </div>
+                    <div class="border-top">
+                        <div class="card-body">
+                            <button type="submit" class="btn btn-success">Update</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+{% endblock %}
+

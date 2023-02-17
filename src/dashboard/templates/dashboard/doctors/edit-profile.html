@@ -1,0 +1,720 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% url 'dashboard:add_doctor_education' as edit_doctor_education_url %}
+
+
+{% block content %}
+
+
+<div class="content">
+    <div class="row">
+        <div class="col-sm-12">
+            <h4 class="page-title">Edit Profile</h4>
+        </div>
+    </div>
+    <div class="card-box">
+        <form action="{% url 'dashboard:edit_doctor_profile' slug=doctor.slug %}" method="post"
+              enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="card-box">
+                <h3 class="card-title">Basic Information's</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="focus-label">First Name</label>
+                            {{form.first_name}}
+                            <div class="form-error">{{ form.first_name.errors }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="focus-label">Last Name</label>
+                            {{form.last_name}}
+                            <div class="form-error">{{ form.last_name.errors }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Middle Name</label>
+                            {{form.middle_name}}
+                            <div class="form-error">{{ form.middle_name.errors }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Birth Date</label>
+                            <div class="cal-icon">
+                                {{form.birth_date}}
+                                <div class="form-error">{{ form.birth_date.errors }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group gender-select">
+                            <label class="gen-label">Gender:</label>
+                            {% for radio in form.gender %}
+                            <div class="form-check-inline">
+                                <label class="form-check-label">
+                                    {{ radio.tag }}
+                                    {{ radio.choice_label }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                            <div class="form-error">{{ form.gender.errors }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Image</label>
+                            {{form.image}}
+                            <div class="form-error">{{ form.image.errors }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Biography</label>
+                            {{form.bio}}
+                            <div class="form-error">{{ form.bio.errors }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="focus-label">Skill</label>
+                            {{form.skill}}
+                            <div class="form-error">{{ form.skill.errors }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="focus-label">Department</label>
+                            {{form.department}}
+                            <div class="form-error">{{ form.department.errors }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="focus-label">Speciality</label>
+                            {{form.speciality}}
+                            <div class="form-error">{{ form.speciality.errors }}</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="card-box">
+                <h3 class="card-title">Contact Information's</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="focus-label">Phone Number</label>
+                            {{form.phone}}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="focus-label">Email</label>
+                            {{form.email}}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="focus-label">State</label>
+                            {{form.state}}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="focus-label">City</label>
+                            {{form.city}}
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="focus-label">Address</label>
+                            {{form.address}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Save</button>
+
+        </form>
+    </div>
+
+    <div class="card-box">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Education Information's</h3>
+
+                </div>
+                <div class="col-md-6 text-right">
+                    <div class="add-more">
+                        <a href="#add_doctor_education" class="btn btn-primary" data-toggle="modal"><i
+                                class="fa fa-plus"></i> Add More Institute</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        {% for education in educations %}
+        <div class="card-box">
+
+            <div class="container mt-2">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Institution</label>
+                            <input type="text" class="form-control floating" value="{{education.institution}}"
+                                   disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Subject</label>
+                            <input type="text" class="form-control floating" value="{{education.subject}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Starting Date</label>
+                            <div class="cal-icon">
+                                <input type="text" class="form-control floating" value="{{education.starting_date}}"
+                                       disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Complete Date</label>
+                            <div class="cal-icon">
+                                <input type="text" class="form-control floating" value="{{education.complete_date}}"
+                                       disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Degree</label>
+                            <input type="text" class="form-control floating" value="{{education.degree}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Grade</label>
+                            <input type="text" class="form-control floating" value="{{education.grade}}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="add-more">
+                                <a href="{% url 'dashboard:edit_doctor_education' pk=education.pk %}"
+                                   class="btn btn-success"><i
+                                        class="fa fa-edit"></i> Edit Institute</a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="add-more">
+                                <a href="{% url 'dashboard:delete_doctor_education' pk=education.pk %}"
+                                   class="btn btn-danger" id="btnedc" onclick="JavaScript:return Validator();"><i
+                                        class="fa fa-remove"></i> Delete Institute</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+
+
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="card-box">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Experience Information's</h3>
+
+                </div>
+                <div class="col-md-6 text-right">
+                    <div class="add-more">
+                        <a href="#add_doctor_experience" class="btn btn-primary" data-toggle="modal"><i
+                                class="fa fa-plus"></i> Add More Experience</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        {% for experience in experiences %}
+        <div class="card-box">
+
+            <div class="container mt-2">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Company</label>
+                            <input type="text" class="form-control floating" value="{{experience.company_name}}"
+                                   disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Job Position</label>
+                            <input type="text" class="form-control floating" value="{{experience.job_position}}" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Period From</label>
+                            <input type="text" class="form-control floating" value="{{experience.period_from}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Period To</label>
+                            <input type="text" class="form-control floating" value="{{experience.period_to}}" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group form-focus">
+                            <label class="focus-label">Address</label>
+                                <input type="text" class="form-control floating" value="{{experience.address}}"
+                                       disabled>
+                        </div>
+                    </div>
+
+                </div>
+                <hr>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="add-more">
+                                <a href="{% url 'dashboard:edit_doctor_experience' pk=experience.pk %}"
+                                   class="btn btn-success"><i
+                                        class="fa fa-edit"></i> Edit Experience</a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="add-more">
+                                <a href="{% url 'dashboard:delete_doctor_experience' pk=experience.pk %}"
+                                   class="btn btn-danger" id="" onclick="JavaScript:return Validator();"><i
+                                        class="fa fa-remove"></i> Delete Experience</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+
+
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+
+
+</div>
+
+<div class="notification-box">
+    <div class="msg-sidebar notifications msg-noti">
+        <div class="topnav-dropdown-header">
+            <span>Messages</span>
+        </div>
+        <div class="drop-scroll msg-list-scroll" id="msg_list">
+            <ul class="list-box">
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">R</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">Richard Miles </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item new-message">
+                            <div class="list-left">
+                                <span class="avatar">J</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">John Doe</span>
+                                <span class="message-time">1 Aug</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">T</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author"> Tarah Shropshire </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">M</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">Mike Litorus</span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">C</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author"> Catherine Manseau </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">D</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author"> Domenic Houston </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">B</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author"> Buster Wigton </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">R</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author"> Rolland Webber </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">C</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author"> Claire Mapes </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">M</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">Melita Faucher</span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">J</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">Jeffery Lalor</span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">L</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">Loren Gatlin</span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">T</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">Tarah Shropshire</span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="topnav-dropdown-footer">
+            <a href="chat.html">See all messages</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add_doctor_education">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Education</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'dashboard:add_doctor_education' slug=doctor.slug %}" method="post">
+                    <div class="col-12 col-md-10">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-focus">
+                                    <label class="focus-label">Institution</label>
+                                    <input type="text" class="form-control floating" name="institution" id="institution"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-focus">
+                                    <label class="focus-label">Subject</label>
+                                    <input type="text" class="form-control floating" name="subject" id="subject"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Starting Date</label>
+                                    <input type="date" class="form-control"
+                                           name="starting_date" id="starting_date" required>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Complete Date</label>
+                                    <input type="date" class="form-control"
+                                           name="complete_date" id="complete_date" required>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-focus">
+                                    <label class="focus-label">Degree</label>
+                                    <input type="text" class="form-control floating" name="degree" id="degree" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-focus">
+                                    <label class="focus-label">Grade</label>
+                                    <input type="text" class="form-control floating" name="grade" id="grade" required>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="submit-section text-center">
+                        <button type="submit" class="btn btn-primary submit-btn">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add_doctor_experience">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Experience</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'dashboard:add_doctor_experience' slug=doctor.slug %}" method="post">
+                    <div class="col-12 col-md-10">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group form-focus">
+                                    <label class="focus-label">Company</label>
+                                    <input type="text" class="form-control floating" name="company_name"
+                                           id="company_name"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group form-focus">
+                                    <label class="focus-label">Job Position</label>
+                                    <input type="text" class="form-control floating" name="job_position"
+                                           id="job_position"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Period From</label>
+                                    <input type="date" class="form-control"
+                                           name="period_from" id="period_from" required>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="focus-label">Period To</label>
+                                    <input type="date" class="form-control floating" name="period_to" id="period_to"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="focus-label">Address</label>
+                                    <textarea name="address" id="address" rows="3" class="form-control"></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="submit-section text-center">
+                        <button type="submit" class="btn btn-primary submit-btn">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function(){
+        $("#btnedc").click(function(){
+            $.ajax({
+                type: 'GET',
+                url: 'runner.php',
+                data:{'btnedc':'0'},
+                success: function(data) {
+                    $("p").html(data);
+                }
+            });
+   });
+});
+
+function Validator(){
+   if(confirm("Вы подтверждаете операцию?") ){
+      document.getElementById('id').submit();
+      return(true);
+   }else{
+      return(false);
+   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+{% endblock %}
+

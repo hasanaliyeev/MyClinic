@@ -1,0 +1,176 @@
+{% extends 'dashboard/doctors/profile-layout.html' %}
+{% load static %}
+{% block profile_content %}
+
+
+<div class="content">
+    <div class="card-box">
+        <h4 class="card-box">{{schedules.first.date}}</h4>
+        <hr>
+        <div class="row">
+            <div class="col-md-7">
+                <div class="card-box">
+                    <h4 class="card-title">Schedules</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-border table-striped custom-table mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Status</th>
+                                        <th class="text-right">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for schedule in schedules %}
+                                    <tr>
+                                        <td>{{schedule.start_from}}</td>
+                                        <td>{{schedule.finish_by}}</td>
+                                        <td><span
+                                                class="custom-badge status-{% if schedule.is_active %}green{% else %}red{% endif %}">{% if schedule.is_active %}Active{% else %}Inactive{% endif %}</span>
+                                        </td>
+                                        <td class="text-right">
+                                            <div class="dropdown dropdown-action">
+                                                <a href="#" class="action-icon dropdown-toggle"
+                                                   data-toggle="dropdown"
+                                                   aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a class="dropdown-item"
+                                                       href="{% url 'dashboard:edit_schedule' pk=schedule.pk %}"><i
+                                                            class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                    <a class="dropdown-item"
+                                                       href="{% url 'dashboard:delete_schedule' pk=schedule.pk %}"
+                                                    ><i
+                                                            class="fa fa-trash-o m-r-5"></i>
+                                                        Delete</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-5">
+                {% if action == 'edit' %}
+                <div class="card-box">
+                    <h4 class="card-title">EDIT Schedule</h4>
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Start Time</label>
+                                    {{form.start_from}}
+                                    <div class="form-error">{{ form.start_from.errors }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>End Time</label>
+                                    {{form.finish_by}}
+                                    <div class="form-error">{{ form.finish_by.errors }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Status:</label>
+                                    {{ form.is_active }}
+                                    <div class="form-error">{{ form.is_active.errors }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="card-box">
+                    <h4 class="card-title">ADD Schedule</h4>
+                    <form action="{% url 'dashboard:add_schedule' slug=doctor.slug year=date.year month=date.month day=date.day %}"
+                          method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Start Time</label>
+                                    <input type="time" class="form-control" name="start_from">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>End Time</label>
+                                    <input type="time" class="form-control" name="finish_by">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="display-block">Schedule Status</label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="is_active" id="product_active"
+                                       value="True" checked>
+                                <label class="form-check-label" for="product_active">
+                                    Active
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="is_active" id="product_inactive"
+                                       value="False">
+                                <label class="form-check-label" for="product_inactive">
+                                    Inactive
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+            $(function () {
+                $('#datetimepicker3').datetimepicker({
+                    format: 'LT'
+                });
+				$('#datetimepicker4').datetimepicker({
+                    format: 'LT'
+                });
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+{% endblock %}

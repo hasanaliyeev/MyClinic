@@ -1,0 +1,135 @@
+{% extends 'patients/patient-layout.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+
+        <!-- Profile Settings Form -->
+        <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row form-row">
+                <div class="col-12 col-md-12">
+                    <div class="form-group">
+                        <div class="change-avatar">
+                            <div class="profile-img">
+                                <img src="{{request.user.patient.image.url}}" alt="User Image">
+                            </div>
+                            <div class="upload-img">
+                                <div class="change-photo-btn">
+                                    <span><i class="fa fa-upload"></i> Upload Photo</span>
+                                    {{form.image}}
+                                </div>
+                                <small class="form-text text-muted">Allowed JPG, GIF or PNG. Max
+                                    size of 2MB</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md">
+                            {% if messages %}
+                            {% for message in messages %}
+
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {{ message }}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            {% endif %}
+
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        {{form.first_name}}
+                        <div class="form-error">{{ form.first_name.errors }}</div>
+
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        {{form.last_name}}
+                        <div class="form-error">{{ form.last_name.errors }}</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label>Middle Name</label>
+                        {{form.middle_name}}
+                        <div class="form-error">{{ form.middle_name.errors }}</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <div class="cal-icon">
+                            {{form.birth_date}}
+                            <div class="form-error">{{ form.birth_date.errors }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label>Gender</label>
+                        {{form.gender}}
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label>Mobile</label>
+                        {{form.phone_number}}
+                        <div class="form-error">{{ form.phone_number.errors }}</div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <label>Address</label>
+                        {{form.address}}
+                        <div class="form-error">{{ form.address.errors }}</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label>City</label>
+                        {{form.city}}
+                        <div class="form-error">{{ form.city.errors }}</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        <label>State</label>
+                        {{form.state}}
+                        <div class="form-error">{{ form.state.errors }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="submit-section">
+                <button type="submit" class="btn btn-primary submit-btn">Save Changes</button>
+            </div>
+        </form>
+        <!-- /Profile Settings Form -->
+
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,461 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% url 'dashboard:add_doctor_education' as edit_doctor_education_url %}
+
+
+{% block content %}
+
+
+<div class="content">
+
+    <div class="row">
+        <div class="col-sm-4 col-3">
+            <h4 class="page-title">Specialities</h4>
+        </div>
+        <div class="col-sm-8 col-9 text-right m-b-20">
+            <div class="add-more">
+                <a href="#add_speciality" class="btn btn btn-primary btn-rounded float-right" data-toggle="modal"><i
+                        class="fa fa-plus"></i> Add Speciality</a>
+            </div>
+        </div>
+    </div>
+    <div class="card-box">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Specialities</h3>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md">
+                            {% if messages %}
+                            {% for message in messages %}
+
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {{ message }}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            {% endif %}
+
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped custom-table">
+                            <thead>
+                            <tr>
+                                <th>Speciality ID</th>
+                                <th>Speciality</th>
+                                <th class="text-right">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for sp in page_obj %}
+                            <tr>
+                                <td>APT000{{sp.pk}}</td>
+                                <td><img width="28" height="28" src="{{sp.image.url}}"
+                                         class="rounded-circle m-r-5" alt="">
+                                    {{sp.name}}
+                                </td>
+                                <td class="text-right">
+                                    <a href="#edit_speciality" data-toggle="modal">
+                                        <button type="submit" class="btn btn-success">Edit</button>
+                                    </a>
+                                    <a href="#delete_speciality" class="href" data-toggle="modal">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </a>
+                                </td>
+                            </tr>
+                            <div class="modal fade" id="edit_speciality">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Edit Speciality</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{% url 'dashboard:edit_speciality' pk=sp.pk %}" method="post"
+                                                  enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="col-12 col-md-10">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label>Speciality</label>
+                                                            {{form.name}}
+                                                            <div class="form-error">{{ form.name.errors }}</div>
+                                                        </div>
+                                                        <div class="col-md-6">
+
+                                                            <label>Image</label>
+                                                            {{form.image}}
+                                                            <div class="form-error">{{ form.image.errors }}</div>
+                                                        </div>
+                                                    </div>
+                                                    <br>
+
+                                                    <div class="submit-section">
+                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </form>
+                                        </div>
+                                        <br>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div id="delete_speciality" class="modal fade delete-modal" role="dialog">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-body text-center">
+                                            <img src="{% static 'dashboard/assets/img/sent.png' %}" alt="" width="50" height="46">
+                                            <h3>Are you sure want to delete this Appointment?</h3>
+                                            <div class="m-t-20">
+                                                <a href="" class="btn btn-white" data-dismiss="modal">Close</a>
+                                                <a href="{% url 'dashboard:delete_speciality' pk=sp.pk %}"><button type="submit" class="btn btn-danger">Delete</button></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="notification-box">
+    <div class="msg-sidebar notifications msg-noti">
+        <div class="topnav-dropdown-header">
+            <span>Messages</span>
+        </div>
+        <div class="drop-scroll msg-list-scroll" id="msg_list">
+            <ul class="list-box">
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">R</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">Richard Miles </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item new-message">
+                            <div class="list-left">
+                                <span class="avatar">J</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">John Doe</span>
+                                <span class="message-time">1 Aug</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">T</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author"> Tarah Shropshire </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">M</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">Mike Litorus</span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">C</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author"> Catherine Manseau </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">D</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author"> Domenic Houston </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">B</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author"> Buster Wigton </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">R</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author"> Rolland Webber </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">C</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author"> Claire Mapes </span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">M</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">Melita Faucher</span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">J</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">Jeffery Lalor</span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">L</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">Loren Gatlin</span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="chat.html">
+                        <div class="list-item">
+                            <div class="list-left">
+                                <span class="avatar">T</span>
+                            </div>
+                            <div class="list-body">
+                                <span class="message-author">Tarah Shropshire</span>
+                                <span class="message-time">12:28 AM</span>
+                                <div class="clearfix"></div>
+                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="topnav-dropdown-footer">
+            <a href="chat.html">See all messages</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add_speciality">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Speciality</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'dashboard:add_speciality' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="col-12 col-md-10">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Speciality</label>
+                                {{form.name}}
+                                <div class="form-error">{{ form.name.errors }}</div>
+                            </div>
+                            <div class="col-md-6">
+
+                                <label>Image</label>
+                                {{form.image}}
+                                <div class="form-error">{{ form.image.errors }}</div>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="submit-section">
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+
+                    </div>
+
+
+                </form>
+            </div>
+            <br>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function(){
+        $("#btnedc").click(function(){
+            $.ajax({
+                type: 'GET',
+                url: 'runner.php',
+                data:{'btnedc':'0'},
+                success: function(data) {
+                    $("p").html(data);
+                }
+            });
+   });
+});
+
+function Validator(){
+   if(confirm("Вы подтверждаете операцию?") ){
+      document.getElementById('id').submit();
+      return(true);
+   }else{
+      return(false);
+   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+{% endblock %}
+
+

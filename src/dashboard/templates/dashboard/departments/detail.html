@@ -1,0 +1,148 @@
+{% extends "dashboard/base.html" %}
+{% load i18n %}
+{% load static %}
+{% block extra_css %}
+<style xmlns="http://www.w3.org/1999/html">
+</style>
+{% endblock %}
+{% block page_title %}
+Form
+{% endblock %}
+{% block content %}
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">Department Detail</h4>
+            <div class="ml-auto text-right">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Library</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <br>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {% for message in messages %}
+                            <div class="alert alert-{%if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% elif message.tags == 'info' %}info{% endif %}"
+                                 role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container mt-5">
+                    <h1 class="text-center mb-5">Department Information</h1>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h3>Department Name:</h3>
+                            <p>{{department.name}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h3>Number of Doctors:</h3>
+                            <p>500</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3>Description</h3>
+                            <p>{{department.description}}</p>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <a href="{% url 'dashboard:department_update' pk=department.pk %}">
+                                <button type="button" class="form-control">Update</button>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'dashboard:department_delete' pk=department.pk %}">
+                                <button type="button" class="form-control">Delete</button>
+                            </a>
+                        </div>
+                    </div>
+
+                    <br>
+                </div>
+            </div>
+            <div class="card">
+                <div class="container mt-5">
+                    <h1 class="text-center mb-5">Department Information</h1>
+
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Department Name</th>
+                            <th scope="col">Number of Doctors</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for department in page_obj %}
+                        <tr>
+                            <th scope="row">{{forloop.counter}}</th>
+                            <td><a href="{% url 'dashboard:department_detail' pk=department.pk %}" class="href">{{department.name}}</a>
+                            </td>
+                            <td>New York</td>
+                        </tr>
+                        {% endfor %}
+
+
+                        </tbody>
+                    </table>
+
+
+
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination pagination-sm">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% endif %}
+
+                            {% for page in page_obj.paginator.page_range %}
+                            <li class="page-item {% if page == page_obj.number %}active{% endif %}"
+                                aria-current="page">
+                                <a class="page-link" href="?page={{page}}">{{ page }}</a>
+                            </li>
+                            {% endfor %}
+
+                            <li class="page-item">
+                                {% if page_obj.has_next %}
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
