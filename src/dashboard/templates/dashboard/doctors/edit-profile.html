@@ -9,7 +9,7 @@
 <div class="content">
     <div class="row">
         <div class="col-sm-12">
-            <h4 class="page-title">Edit Profile</h4>
+            <h4 class="page-title">Редактировать профиль</h4>
         </div>
     </div>
     <div class="card-box">
@@ -18,32 +18,32 @@
             {% csrf_token %}
 
             <div class="card-box">
-                <h3 class="card-title">Basic Information's</h3>
+                <h3 class="card-title">Основная информация</h3>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="focus-label">First Name</label>
+                            <label class="focus-label">Имя</label>
                             {{form.first_name}}
                             <div class="form-error">{{ form.first_name.errors }}</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label class="focus-label">Last Name</label>
+                            <label class="focus-label">Фамилия</label>
                             {{form.last_name}}
                             <div class="form-error">{{ form.last_name.errors }}</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>Middle Name</label>
+                            <label>Отчество</label>
                             {{form.middle_name}}
                             <div class="form-error">{{ form.middle_name.errors }}</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>Birth Date</label>
+                            <label>Дата рождения</label>
                             <div class="cal-icon">
                                 {{form.birth_date}}
                                 <div class="form-error">{{ form.birth_date.errors }}</div>
@@ -52,7 +52,7 @@
                     </div>
                     <div class="col-sm-4">
                         <div class="form-group gender-select">
-                            <label class="gen-label">Gender:</label>
+                            <label class="gen-label">Пол:</label>
                             {% for radio in form.gender %}
                             <div class="form-check-inline">
                                 <label class="form-check-label">
@@ -66,14 +66,14 @@
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label>Image</label>
+                            <label>Фото</label>
                             {{form.image}}
                             <div class="form-error">{{ form.image.errors }}</div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Biography</label>
+                            <label>Биография</label>
                             {{form.bio}}
                             <div class="form-error">{{ form.bio.errors }}</div>
                         </div>
@@ -87,14 +87,14 @@
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="focus-label">Department</label>
+                            <label class="focus-label">Департамент</label>
                             {{form.department}}
                             <div class="form-error">{{ form.department.errors }}</div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="focus-label">Speciality</label>
+                            <label class="focus-label">Специальность</label>
                             {{form.speciality}}
                             <div class="form-error">{{ form.speciality.errors }}</div>
                         </div>
@@ -104,42 +104,42 @@
             </div>
 
             <div class="card-box">
-                <h3 class="card-title">Contact Information's</h3>
+                <h3 class="card-title">Контактная информация</h3>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="focus-label">Phone Number</label>
+                            <label class="focus-label">Номер телефона</label>
                             {{form.phone}}
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="focus-label">Email</label>
+                            <label class="focus-label">Электронная почта</label>
                             {{form.email}}
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="focus-label">State</label>
+                            <label class="focus-label">Область / Край</label>
                             {{form.state}}
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="focus-label">City</label>
+                            <label class="focus-label">Город</label>
                             {{form.city}}
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label class="focus-label">Address</label>
+                            <label class="focus-label">Адрес</label>
                             {{form.address}}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <button class="btn btn-primary" type="submit">Save</button>
+            <button class="btn btn-primary" type="submit">Сохранять</button>
 
         </form>
     </div>

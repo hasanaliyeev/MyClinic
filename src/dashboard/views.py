@@ -246,17 +246,22 @@ def delete_doctor_experience(request, pk):
     return redirect('dashboard:edit_doctor_profile', slug=doctor.slug)
 
 
-def doctor_schedules(request, slug):
-    context = {}
+def schedules(request, slug):
     active_page = 'schedule'
     doctor = get_object_or_404(Doctor, slug=slug)
     start_date = datetime.date.today()
     end_date = start_date + datetime.timedelta(days=30)
-    schedules = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date]).order_by('date',
-                                                                                                    'start_from')
-    context['doctor'] = doctor
-    context['active_page'] = active_page
-    context['schedules'] = schedules
+    qs = Schedule.objects.filter(doctor=doctor, date__range=[start_date, end_date]).order_by('date',
+                                                                                             'start_from')
+    paginator = Paginator(qs, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {
+        'active_page': active_page,
+        'doctor': doctor,
+        'page_obj': page_obj
+    }
+
     return render(request, 'dashboard/doctors/schedules.html', context)
 
 
@@ -274,8 +279,8 @@ def schedule_list(request, slug, year, month, day):
     context = {'doctor': doctor}
     date = datetime.date(year, month, day)
     context['date'] = date
-    schedules = Schedule.objects.filter(doctor=doctor, date=date).order_by('start_from')
-    context['schedules'] = schedules
+    qs = Schedule.objects.filter(doctor=doctor, date=date).order_by('start_from')
+    context['schedules'] = qs
     context['active_page'] = 'schedule'
     return render(request, 'dashboard/doctors/schedule-list.html', context)
 
@@ -299,8 +304,8 @@ def edit_schedule(request, pk):
     schedule = get_object_or_404(Schedule, pk=pk)
     doctor = schedule.doctor
     date = schedule.date
-    schedules = Schedule.objects.filter(doctor=doctor, date=date)
-    context = {'doctor': doctor, 'date': date, 'schedules': schedules, 'action': action, 'active_page': 'schedule'}
+    qs = Schedule.objects.filter(doctor=doctor, date=date)
+    context = {'doctor': doctor, 'date': date, 'schedules': qs, 'action': action, 'active_page': 'schedule'}
 
     if request.method == 'POST':
         form = ScheduleForm(request.POST, instance=schedule)
@@ -316,14 +321,15 @@ def edit_schedule(request, pk):
 
 
 def delete_schedule(request, pk):
+    schedule = get_object_or_404(Schedule, pk=pk)
+    doctor = schedule.doctor
+    date = schedule.date
     try:
-        schedule = get_object_or_404(Schedule, pk=pk)
-        doctor = schedule.doctor
-        date = schedule.date
         schedule.delete()
         return redirect('dashboard:day_schedule_list', slug=doctor.slug, year=date.year, month=date.month, day=date.day)
-    except ValueError:
-        pass
+    except Exception as err:
+        messages.warning(request, err)
+    return redirect('dashboard:day_schedule_list', slug=doctor.slug, year=date.year, month=date.month, day=date.day)
 
 
 def appointments(request, slug):

@@ -20,7 +20,8 @@
                                         <th>Start Time</th>
                                         <th>End Time</th>
                                         <th>Status</th>
-                                        <th class="text-right">Action</th>
+                                        <th></th>
+                                        <th class="text-right">Действие</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -31,6 +32,9 @@
                                         <td><span
                                                 class="custom-badge status-{% if schedule.is_active %}green{% else %}red{% endif %}">{% if schedule.is_active %}Active{% else %}Inactive{% endif %}</span>
                                         </td>
+                                        <td><span
+                                                class="badge bg-{% if schedule.appointment %}warning text-dark{% else %}success{% endif %}">{% if schedule.appointment %}Занятый{% else %}Свободный{% endif %}</span>
+                                        </td>
                                         <td class="text-right">
                                             <div class="dropdown dropdown-action">
                                                 <a href="#" class="action-icon dropdown-toggle"
@@ -39,16 +43,34 @@
                                                 <div class="dropdown-menu dropdown-menu-right">
                                                     <a class="dropdown-item"
                                                        href="{% url 'dashboard:edit_schedule' pk=schedule.pk %}"><i
-                                                            class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                            class="fa fa-pencil m-r-5"></i> Изменить</a>
                                                     <a class="dropdown-item"
-                                                       href="{% url 'dashboard:delete_schedule' pk=schedule.pk %}"
+                                                       href="#delete_schedule" data-toggle="modal"
                                                     ><i
                                                             class="fa fa-trash-o m-r-5"></i>
-                                                        Delete</a>
+                                                        Удалить</a>
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>
+                                    <div id="delete_schedule" class="modal fade delete-modal" role="dialog">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-body text-center">
+                                                    <img src="{% static 'dashboard/assets/img/sent.png' %}" alt=""
+                                                         width="50" height="46">
+                                                    <h3>Are you sure want to delete this Doctor?</h3>
+                                                    <div class="m-t-20">
+                                                        <a href="" class="btn btn-white" data-dismiss="modal">Close</a>
+                                                        <a href="{% url 'dashboard:delete_schedule' pk=schedule.pk %}"
+                                                           data-toggle="modal">
+                                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     {% endfor %}
                                     </tbody>
                                 </table>
@@ -62,7 +84,7 @@
             <div class="col-md-5">
                 {% if action == 'edit' %}
                 <div class="card-box">
-                    <h4 class="card-title">EDIT Schedule</h4>
+                    <h4 class="card-title">ИЗМЕНИТЬ Расписание</h4>
                     <form action="" method="post">
                         {% csrf_token %}
                         <div class="row">
@@ -95,7 +117,7 @@
                 </div>
                 {% else %}
                 <div class="card-box">
-                    <h4 class="card-title">ADD Schedule</h4>
+                    <h4 class="card-title">ДОБАВИТЬ Расписание</h4>
                     <form action="{% url 'dashboard:add_schedule' slug=doctor.slug year=date.year month=date.month day=date.day %}"
                           method="post">
                         {% csrf_token %}
@@ -119,18 +141,18 @@
                                 <input class="form-check-input" type="radio" name="is_active" id="product_active"
                                        value="True" checked>
                                 <label class="form-check-label" for="product_active">
-                                    Active
+                                    Активный
                                 </label>
                             </div>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="is_active" id="product_inactive"
                                        value="False">
                                 <label class="form-check-label" for="product_inactive">
-                                    Inactive
+                                    Неактивный
                                 </label>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Add</button>
+                        <button type="submit" class="btn btn-primary">Добавить</button>
                     </form>
                 </div>
                 {% endif %}
@@ -151,6 +173,8 @@
                     format: 'LT'
                 });
             });
+
+
 
 
 

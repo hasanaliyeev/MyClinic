@@ -107,7 +107,7 @@ class Schedule(models.Model):
 class Appointment(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='appointments')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments')
-    schedule = models.OneToOneField(Schedule, on_delete=models.CASCADE, related_name='appointment')
+    schedule = models.OneToOneField(Schedule, on_delete=models.PROTECT, related_name='appointment')
     created = models.DateTimeField(auto_now_add=True)
     message = models.TextField(null=True, blank=True)
 

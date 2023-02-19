@@ -5,12 +5,7 @@
 <div class="content">
 
     <div class="card-box">
-
-
-
         <div class="row">
-
-
 
             <div class="col-md-12">
 
@@ -18,14 +13,14 @@
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-7">
-                            <h3>Schedules</h3>
+                            <h3>Графики</h3>
                         </div>
                         <div class="col-md-3">
                             <input type="date" class="form-control" id="date" name="date"
                                    required>
                         </div>
                         <div class="col-md-2 text-right">
-                            <button type="submit" class="btn btn-success btn-lg">Get Schedule</button>
+                            <button type="submit" class="btn btn-success btn-lg">Создать график</button>
                         </div>
 
                     </div>
@@ -33,7 +28,6 @@
                 </form>
             </div>
         </div>
-
         <hr>
         <div class="row">
             <div class="col-md-12">
@@ -41,39 +35,62 @@
                     <table class="table table-border table-striped custom-table mb-0">
                         <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Available Time</th>
-                            <th>Status</th>
-                            <th class="text-right">Action</th>
+                            <th>Дата</th>
+                            <th>Время</th>
+                            <th></th>
+                            <th>Статус</th>
+                            <th class="text-right">Действие</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for schedule in schedules %}
+                        {% for schedule in page_obj %}
                         <tr>
                             <td>{{schedule.date}}</td>
                             <td>{{schedule.start_from}} - {{schedule.finish_by}}</td>
+                            <td><span class="custom-badge status-{% if schedule.is_active %}green{% else %}red{% endif %}">{% if schedule.is_active %}Active{% else %}Inactive{% endif %}</span>
+                            </td>
+
                             <td><span
-                                                class="custom-badge status-{% if schedule.is_active %}green{% else %}red{% endif %}">{% if schedule.is_active %}Active{% else %}Inactive{% endif %}</span>
-                                        </td>
-                            <td class="text-right">
-                                <div class="dropdown dropdown-action">
-                                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                                       aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="edit-schedule.html"><i
-                                                class="fa fa-pencil m-r-5"></i> Edit</a>
-                                        <a class="dropdown-item" href="#" data-toggle="modal"
-                                           data-target="#delete_schedule"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                    </div>
-                                </div>
+                                    class="badge bg-{% if schedule.appointment %}warning text-dark{% else %}success{% endif %}">{% if schedule.appointment %}Занятый{% else %}Свободный{% endif %}</span>
+                            </td>
+                            <td class="text-right"><a class=""
+                                                      href="{% url 'dashboard:edit_schedule' pk=schedule.pk %}"><i
+                                    class="fa fa-pencil m-r-5"></i> Редактировать</a>
                             </td>
                         </tr>
+
                         {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+        <hr>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for page in page_obj.paginator.page_range %}
+                <li class="page-item {% if page == page_obj.number %}active{% endif %}" aria-current="page">
+                    <a class="page-link" href="?page={{page}}">{{ page }}</a>
+                </li>
+                {% endfor %}
+
+                <li class="page-item">
+                    {% if page_obj.has_next %}
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                    {% endif %}
+                </li>
+            </ul>
+        </nav>
     </div>
 
 </div>

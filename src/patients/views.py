@@ -18,7 +18,7 @@ def profile_setting(request):
     context = {}
     patient = get_object_or_404(Patient, user=request.user)
     context['action'] = 'profile_setting'
-    if not request.user.is_authenticated:
+    if request.user.is_authenticated:
         if request.user != patient.user:
             return redirect('patients:profile_setting', slug=request.user.patient.slug)
     else:

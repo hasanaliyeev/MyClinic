@@ -27,7 +27,7 @@ urlpatterns = [
     path('doctors/delete-experience/<int:pk>/', views.delete_doctor_experience, name='delete_doctor_experience'),
     path('doctors/edit-experience/<int:pk>/', views.edit_doctor_experience, name='edit_doctor_experience'),
 
-    path('doctors/<slug:slug>/schedules/', views.doctor_schedules, name='doctor_schedules'),
+    path('doctors/<slug:slug>/schedules/', views.schedules, name='schedules'),
     path('doctors/<slug:slug>/schedule-detail/', views.search_schedule_day, name='search_schedule_day'),
     path('doctors/<slug:slug>/schedules/<int:year>/<int:month>/<int:day>/', views.schedule_list,
          name='day_schedule_list'),

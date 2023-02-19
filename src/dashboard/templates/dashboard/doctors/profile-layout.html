@@ -4,54 +4,64 @@
 {% url 'dashboard:doctor_schedules' as doctor_schedules_url %}
 
 {% block content %}
+
+
 <div class="content">
 
-    <div class="card-box profile-header">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="profile-view">
-                    <div class="profile-img-wrap">
-                        <div class="profile-img">
-                            <a href="#"><img class="avatar" src="{{doctor.image.url}}" alt=""></a>
-                        </div>
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard:home' %}">Главная</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard:doctors' %}">Врачи</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Профиль</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-md-12">
+
+            <div class="profile-view">
+                <div class="profile-img-wrap">
+                    <div class="profile-img">
+                        <a href="#"><img class="avatar" src="{{doctor.image.url}}" alt=""></a>
                     </div>
-                    <div class="profile-basic">
-                        <div class="row">
-                            <div class="col-md-5">
-                                <div class="profile-info-left">
-                                    <h3 class="user-name m-t-0 mb-0">{{doctor}}</h3>
-                                    <small class="text-muted">{{doctor.speciality}}</small>
-                                    <div class="staff-id">Employee ID : DR-0001</div>
-                                    <div class="staff-msg"><a
-                                            href="{% url 'dashboard:edit_doctor_profile' slug=doctor.slug %}"
-                                            class="btn btn-primary"><i
-                                            class="fa fa-edit"> Редактировать профиль</i></a></div>
-                                </div>
+                </div>
+                <div class="profile-basic">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="profile-info-left">
+                                <h3 class="user-name m-t-0 mb-0">{{doctor}}</h3>
+                                <small class="text-muted">{{doctor.speciality}}</small>
+                                <div class="staff-id">Employee ID : DR-0001</div>
+                                <div class="staff-msg"><a
+                                        href="{% url 'dashboard:edit_doctor_profile' slug=doctor.slug %}"
+                                        class="btn btn-primary"><i
+                                        class="fa fa-edit"> Редактировать профиль</i></a></div>
                             </div>
-                            <div class="col-md-7">
-                                <ul class="personal-info">
-                                    <li>
-                                        <span class="title">Телефон:</span>
-                                        <span class="text"><a href="#">{{doctor.phone}}</a></span>
-                                    </li>
-                                    <li>
-                                        <span class="title">Электронная почта:</span>
-                                        <span class="text"><a href="#">{{doctor.email}}</a></span>
-                                    </li>
-                                    <li>
-                                        <span class="title">День рождения:</span>
-                                        <span class="text">{{doctor.birth_date}}</span>
-                                    </li>
-                                    <li>
-                                        <span class="title">Адрес:</span>
-                                        <span class="text">{{doctor.address}}</span>
-                                    </li>
-                                    <li>
-                                        <span class="title">Пол:</span>
-                                        <span class="text">{{doctor.gender}}</span>
-                                    </li>
-                                </ul>
-                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <ul class="personal-info">
+                                <li>
+                                    <span class="title">Телефон:</span>
+                                    <span class="text"><a href="#">{{doctor.phone}}</a></span>
+                                </li>
+                                <li>
+                                    <span class="title">Электронная почта:</span>
+                                    <span class="text"><a href="#">{{doctor.email}}</a></span>
+                                </li>
+                                <li>
+                                    <span class="title">День рождения:</span>
+                                    <span class="text">{{doctor.birth_date}}</span>
+                                </li>
+                                <li>
+                                    <span class="title">Адрес:</span>
+                                    <span class="text">{{doctor.address}}</span>
+                                </li>
+                                <li>
+                                    <span class="title">Пол:</span>
+                                    <span class="text">{{doctor.gender}}</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -59,26 +69,30 @@
         </div>
     </div>
     <br>
-    <ul class="nav nav-tabs">
-        <li class="active">
-            <a class="nav-link {% if active_page == 'doctor_dashboard' %}active{% endif %}"
-               href="{% url 'dashboard:doctor_profile' slug=doctor.slug %}">Панель управления</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {%if active_page == 'appointments_page' %}active{%endif%}" href="{% url 'dashboard:appointments' slug=doctor.slug %}">Расписание</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {%if active_page == 'schedule' %}active{%endif%}" href="{% url 'dashboard:doctor_schedules' slug=doctor.slug %}">График</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="">Disabled</a>
-        </li>
-    </ul>
-    <br>
 
-    {% block profile_content %}{% endblock %}
-
+    <hr>
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="nav nav-tabs nav-tabs-solid nav-justified">
+                <li class="nav-item">
+                    <a class="nav-link {% if active_page == 'doctor_dashboard' %}active{% endif %}"
+                       href="{% url 'dashboard:doctor_profile' slug=doctor.slug %}">Главная</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {%if active_page == 'appointments_page' %}active{%endif%}"
+                       href="{% url 'dashboard:appointments' slug=doctor.slug %}">Расписание</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {%if active_page == 'schedule' %}active{%endif%}"
+                       href="{% url 'dashboard:schedules' slug=doctor.slug %}">График</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
+
+{% block profile_content %}{% endblock %}
+
 
 <div class="notification-box">
     <div class="msg-sidebar notifications msg-noti">
