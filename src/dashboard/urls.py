@@ -6,11 +6,10 @@ app_name = 'dashboard'
 
 urlpatterns = [
     path('', views.index, name='home'),
-    path('department-create/', views.department_create, name='department_create'),
-    path('department/<int:pk>/detail/', views.department_detail, name='department_detail'),
-    path('department/<int:pk>/update/', views.department_update, name='department_update'),
-    path('department/<int:pk>/delete/', views.department_delete, name='department_delete'),
-    path('departments', views.departments, name='departments'),
+
+    path('appointments/', views.appointments, name='appointments'),
+    path('appointments/make-appointment', views.make_appointment, name='make_appointment'),
+    path('appointments/search-schedule', views.search_schedule, name='search_schedule'),
 
     path('doctors/', views.doctors, name='doctors'),
     path('doctors/add-doctor/', views.add_doctor, name='add_doctor'),
@@ -28,7 +27,7 @@ urlpatterns = [
     path('doctors/edit-experience/<int:pk>/', views.edit_doctor_experience, name='edit_doctor_experience'),
 
     path('doctors/<slug:slug>/schedules/', views.schedules, name='schedules'),
-    path('doctors/<slug:slug>/schedule-detail/', views.search_schedule_day, name='search_schedule_day'),
+    path('doctors/<slug:slug>/schedule-detail/', views.get_schedule_day, name='get_schedule_day'),
     path('doctors/<slug:slug>/schedules/<int:year>/<int:month>/<int:day>/', views.schedule_list,
          name='day_schedule_list'),
     path('doctors/<slug:slug>/schedules/<int:year>/<int:month>/<int:day>/add-schedule/', views.add_schedule,
@@ -36,7 +35,7 @@ urlpatterns = [
     path('doctors/schedule-delete/<int:pk>/', views.delete_schedule, name='delete_schedule'),
     path('doctors/edit-schedule/<int:pk>/', views.edit_schedule, name='edit_schedule'),
 
-    path('doctors/<slug:slug>/appointments/', views.appointments, name='appointments'),
+    path('doctors/<slug:slug>/appointments/', views.doctor_appointments, name='doctor_appointments'),
 
     path('specialities/', views.specialities, name='specialities'),
     path('add-speciality/', views.add_speciality, name='add_speciality'),

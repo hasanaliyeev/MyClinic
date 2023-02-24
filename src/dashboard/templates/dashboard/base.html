@@ -3,6 +3,7 @@
 {% url 'dashboard:doctors' as doctors_url %}
 {% url 'dashboard:add_doctor' as add_doctor_url %}
 {% url 'dashboard:specialities' as specialities_url %}
+{% url 'dashboard:appointments' as appointments_url %}
 
 
 <!DOCTYPE html>
@@ -151,8 +152,8 @@
                         <li>
                             <a href="patients.html"><i class="fa fa-wheelchair"></i> <span>Пациенты</span></a>
                         </li>
-                        <li>
-                            <a href="appointments.html"><i class="fa fa-calendar"></i> <span>Расписание</span></a>
+                        <li class="{% if request.path == appointments_url %}active{% endif %}">
+                            <a href="{% url 'dashboard:appointments' %}"><i class="fa fa-calendar"></i> <span>Расписание</span></a>
                         </li>
                         <li class="{% if request.path == specialities_url %}active{% endif %}">
                             <a href="{% url 'dashboard:specialities' %}"><i class="fa fa-calendar-check-o"></i> <span>Специальности</span></a>

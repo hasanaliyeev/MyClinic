@@ -5,21 +5,21 @@
 
 <div class="content">
     <div class="card-box">
-        <h4 class="card-box">{{schedules.first.date}}</h4>
+        <h4 class="card-box">{{date}}</h4>
         <hr>
         <div class="row">
             <div class="col-md-7">
                 <div class="card-box">
-                    <h4 class="card-title">Schedules</h4>
+                    <h4 class="card-title">График дня</h4>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
                                 <table class="table table-border table-striped custom-table mb-0">
                                     <thead>
                                     <tr>
-                                        <th>Start Time</th>
-                                        <th>End Time</th>
-                                        <th>Status</th>
+                                        <th>Начало</th>
+                                        <th>Окончание</th>
+                                        <th>Статус</th>
                                         <th></th>
                                         <th class="text-right">Действие</th>
                                     </tr>
@@ -30,7 +30,7 @@
                                         <td>{{schedule.start_from}}</td>
                                         <td>{{schedule.finish_by}}</td>
                                         <td><span
-                                                class="custom-badge status-{% if schedule.is_active %}green{% else %}red{% endif %}">{% if schedule.is_active %}Active{% else %}Inactive{% endif %}</span>
+                                                class="custom-badge status-{% if schedule.is_active %}green{% else %}red{% endif %}">{% if schedule.is_active %}Активный{% else %}Неактивный{% endif %}</span>
                                         </td>
                                         <td><span
                                                 class="badge bg-{% if schedule.appointment %}warning text-dark{% else %}success{% endif %}">{% if schedule.appointment %}Занятый{% else %}Свободный{% endif %}</span>
@@ -59,13 +59,19 @@
                                                 <div class="modal-body text-center">
                                                     <img src="{% static 'dashboard/assets/img/sent.png' %}" alt=""
                                                          width="50" height="46">
-                                                    <h3>Are you sure want to delete this Doctor?</h3>
-                                                    <div class="m-t-20">
-                                                        <a href="" class="btn btn-white" data-dismiss="modal">Close</a>
-                                                        <a href="{% url 'dashboard:delete_schedule' pk=schedule.pk %}"
+                                                    <h3>Вы уверены, что хотите удалить этот график?</h3>
+                                                    <br>
+                                                    <br>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <a href="" class="btn btn-white" data-dismiss="modal">Закрыть</a>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <a href="{% url 'dashboard:delete_schedule' pk=schedule.pk %}"
                                                            data-toggle="modal">
-                                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                                            <button type="submit" class="btn btn-danger">Удалить</button>
                                                         </a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -90,14 +96,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Start Time</label>
+                                    <label>Начало</label>
                                     {{form.start_from}}
                                     <div class="form-error">{{ form.start_from.errors }}</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>End Time</label>
+                                    <label>Окончание</label>
                                     {{form.finish_by}}
                                     <div class="form-error">{{ form.finish_by.errors }}</div>
                                 </div>
@@ -106,13 +112,13 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Status:</label>
+                                    <label>Статус:</label>
                                     {{ form.is_active }}
                                     <div class="form-error">{{ form.is_active.errors }}</div>
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-primary">Обновить</button>
                     </form>
                 </div>
                 {% else %}
@@ -124,19 +130,19 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>Start Time</label>
-                                    <input type="time" class="form-control" name="start_from">
+                                    <label>Начало</label>
+                                    <input type="time" class="form-control" name="start_from" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>End Time</label>
-                                    <input type="time" class="form-control" name="finish_by">
+                                    <label>Окончание</label>
+                                    <input type="time" class="form-control" name="finish_by" required>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="display-block">Schedule Status</label>
+                            <label class="display-block">Статус</label>
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="is_active" id="product_active"
                                        value="True" checked>
@@ -162,39 +168,4 @@
 
     </div>
 </div>
-
-
-<script>
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-				$('#datetimepicker4').datetimepicker({
-                    format: 'LT'
-                });
-            });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</script>
 {% endblock %}

@@ -21,11 +21,7 @@ class Patient(models.Model):
     image = models.ImageField(upload_to='patients/', default='patients/default-patient.jpg', blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    slug = models.SlugField(max_length=50,unique=True, default='-')
 
     def __str__(self):
         return f'{self.first_name} {self.last_name} {self.middle_name}'
 
-    def save(self, *args, **kwargs):
-        self.slug = self.user.username
-        super().save(*args, **kwargs)

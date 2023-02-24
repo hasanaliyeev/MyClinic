@@ -6,22 +6,12 @@ from django.utils.text import slugify
 
 from other import utils
 
-
-class Department(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    description = models.TextField()
-
-    def __str__(self):
-        return self.name
-
-
 GENDER_SELECT = (
     ('Male', 'Male'),
     ('Female', 'Female'))
 
 
 class Doctor(models.Model):
-    department = models.ForeignKey(Department, on_delete=models.PROTECT, related_name='doctors')
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, blank=True, null=True)
@@ -56,14 +46,10 @@ class Doctor(models.Model):
 class Education(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='educations')
     institution = models.CharField(max_length=100)
-    subject = models.CharField(max_length=100)
+    faculty = models.CharField(max_length=100)
     starting_date = models.DateField()
     complete_date = models.DateField()
-    degree = models.CharField(max_length=100)
     grade = models.CharField(max_length=50)
-
-    def __str__(self):
-        return f'{self.institution} {self.subject}'
 
 
 class Experience(models.Model):
@@ -86,7 +72,7 @@ class Schedule(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return f'{self.doctor} - {self.date} - from {self.start_from} to {self.finish_by}'
+        return f'{self.doctor}'
 
     def clean(self):
         if self.start_from > self.finish_by:
@@ -96,6 +82,8 @@ class Schedule(models.Model):
         if qs.exists():
             raise ValidationError('Input same date')
         current_date = date.today()
+        if self.start_from == self.finish_by:
+            raise ValidationError('Same time error')
         if self.date < current_date:
             raise ValidationError('Current date error')
 
@@ -104,20 +92,31 @@ class Schedule(models.Model):
         super().save(*args, **kwargs)
 
 
+APPOINTMENT_STATUS = (
+    ('Cancelled', 'cancelled'),
+    ('Complete', 'complete'),
+    ('Pending', 'pending')
+)
+
+
 class Appointment(models.Model):
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='appointments')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments')
-    schedule = models.OneToOneField(Schedule, on_delete=models.PROTECT, related_name='appointment')
+    doctor = models.ForeignKey(Doctor, on_delete=models.PROTECT, related_name='appointments')
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='appointments')
+    patient = models.CharField(max_length=255)
+    schedule = models.ForeignKey(Schedule, on_delete=models.PROTECT, related_name='appointment')
+    price = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    date = models.DateField()
+    start_from = models.TimeField()
+    finish_by = models.TimeField()
     created = models.DateTimeField(auto_now_add=True)
-    message = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=50, null=True, blank=True, choices=APPOINTMENT_STATUS)
 
     def __str__(self):
-        return f'{self.doctor} - {self.schedule}'
+        return f'{self.doctor}'
 
 
 class Speciality(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    image = models.ImageField(upload_to='doctors/specialities/', default='doctors/default.jpg')
 
     def __str__(self):
         return self.name

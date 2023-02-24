@@ -9,7 +9,7 @@
 
             <div class="col-md-12">
 
-                <form action="{% url 'dashboard:search_schedule_day' slug=doctor.slug %}" method="post">
+                <form action="{% url 'dashboard:get_schedule_day' slug=doctor.slug %}" method="post">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-7">

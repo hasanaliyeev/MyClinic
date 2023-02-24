@@ -1,8 +1,7 @@
-{% extends 'dashboard/base.html' %}
+{% extends 'dashboard/doctors/profile-layout.html' %}
 {% load static %}
 
-{% block content %}
-
+{% block profile_content %}
 <div class="content">
     <div class="card-box">
         <div class="row">
@@ -10,25 +9,24 @@
                 <h4 class="page-title">Расписания</h4>
             </div>
             <div class="col-sm-8 col-9 text-right m-b-20">
-                <a href="{% url 'dashboard:make_appointment' %}" class="btn btn btn-primary btn-rounded float-right"><i
+                <a href="add-appointment.html" class="btn btn btn-primary btn-rounded float-right"><i
                         class="fa fa-plus"></i> Добавить расписание</a>
             </div>
-
             <div class="col-sm-12">
                 <form action="" method="post">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-2">
-                            <input type="search" name="doctor_name" class="form-control" placeholder="Врач">
-                        </div>
-                        <div class="col-md-2">
-                            <input type="search" name="patient_name" class="form-control" placeholder="Пациент">
-                        </div>
-                        <div class="col-md-2">
                             <input type="date" name="start_date" class="form-control">
                         </div>
                         <div class="col-md-2">
                             <input type="date" name="end_date" class="form-control">
+                        </div>
+                        <div class="col-md-2">
+                            <select name="status" class="form-control">
+                                <option>Select</option>
+                                <option value="">Cancelled</option>
+                            </select>
                         </div>
                         <div class="col-md-2">
                             <button type="submit" class="btn btn-primary btn-lg">Поиск</button>
@@ -46,33 +44,31 @@
                         <thead>
                         <tr>
                             <th>ФИО пациента</th>
-                            <th>ФИО доктора</th>
-                            <th>Дата</th>
-                            <th>Время</th>
+                            <th>Дата расписания</th>
+                            <th>Время расписания</th>
                             <th>Статус</th>
                             <th class="text-right">Действие</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for ap in page_obj %}
+                        {% for appointment in page_obj %}
                         <tr>
-                            <td><img width="28" height="28" src="{% static 'dashboard/assets/img/user.jpg' %}"
-                                     class="rounded-circle m-r-5"
-                                     alt=""> {{ap.user.patient}}
+                            <td><img width="28" height="28" src="{{appointment.user.patient.image.url}}"
+                                     class="rounded-circle m-r-5" alt="">
+                                {{appointment.user.patient}}
                             </td>
-                            <td>{{ap.schedule.doctor}}</td>
-                            <td>{{ap.schedule.date}}</td>
-                            <td>{{ap.schedule.start_from}} - {{ap.schedule.finish_by}}</td>
-                            <td><span class="custom-badge status-red">Status</span></td>
+                            <td>{{appointment.schedule.date}}</td>
+                            <td>{{appointment.schedule.start_from}} - {{appointment.schedule.finish_by}}</td>
+                            <td><span class="custom-badge status-red">Inactive</span></td>
                             <td class="text-right">
                                 <div class="dropdown dropdown-action">
                                     <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
                                        aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                                     <div class="dropdown-menu dropdown-menu-right">
                                         <a class="dropdown-item" href="edit-appointment.html"><i
-                                                class="fa fa-pencil m-r-5"></i> Изменить</a>
+                                                class="fa fa-pencil m-r-5"></i> Edit</a>
                                         <a class="dropdown-item" href="#" data-toggle="modal"
-                                           data-target="#delete_appointment"><i class="fa fa-trash-o m-r-5"></i> Удалить</a>
+                                           data-target="#delete_appointment"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                                     </div>
                                 </div>
                             </td>
@@ -110,20 +106,6 @@
             </ul>
         </nav>
     </div>
-</div>
 
-<div id="delete_appointment" class="modal fade delete-modal" role="dialog">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body text-center">
-                <img src="{% static 'dashboard/assets/img/sent.png' %}" alt="" width="50" height="46">
-                <h3>Are you sure want to delete this Appointment?</h3>
-                <div class="m-t-20"><a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 {% endblock %}
-

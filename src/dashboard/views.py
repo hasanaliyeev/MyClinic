@@ -1,16 +1,13 @@
 import datetime
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator
-from django.db.models import Q
-from django.db.models.functions import Lower
-from django.http import HttpResponse
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 
-from doctors.models import Department, Doctor, Education, Experience, Schedule, Speciality
-from .forms import DepartmentForm, DoctorForm, DoctorEducationForm, DoctorExperienceForm, ScheduleForm, SpecialityForm
+from doctors.models import  Doctor, Education, Experience, Schedule, Speciality, Appointment
+from .forms import  DoctorForm, DoctorEducationForm, DoctorExperienceForm, ScheduleForm, SpecialityForm
 
 
 def func():
@@ -19,66 +16,6 @@ def func():
 
 def index(request):
     return render(request, 'dashboard/index.html')
-
-
-def department_create(request):
-    context = {}
-    if request.method == 'POST':
-        form = DepartmentForm(request.POST)
-        context['form'] = form
-        if form.is_valid():
-            form.save()
-            obj = form.instance
-            messages.success(request, f'{obj.name} created')
-            return redirect('dashboard:department_detail', pk=obj.pk)
-        return render(request, 'dashboard/departments/create.html', context)
-    else:
-        form = DepartmentForm()
-        context['form'] = form
-    return render(request, 'dashboard/departments/create.html', context)
-
-
-def department_detail(request, pk):
-    department = get_object_or_404(Department, pk=pk)
-    context = {'department': department}
-    return render(request, 'dashboard/departments/detail.html', context)
-
-
-def departments(request):
-    objects = Department.objects.all()
-    paginator = Paginator(objects, 20)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    context = {'page_obj': page_obj}
-    return render(request, 'dashboard/departments/department-list.html', context)
-
-
-def department_update(request, pk):
-    department = get_object_or_404(Department, pk=pk)
-    context = {}
-    if request.method == 'POST':
-        form = DepartmentForm(request.POST, instance=department)
-        context['form'] = form
-        if form.is_valid():
-            form.save()
-            messages.success(request, f'{department.name} updated')
-            return redirect('dashboard:department_detail', pk=pk)
-        return render(request, 'dashboard/departments/update.html', context)
-    else:
-        form = DepartmentForm(instance=department)
-        context['form'] = form
-    return render(request, 'dashboard/departments/update.html', context)
-
-
-def department_delete(request, pk):
-    department = get_object_or_404(Department, pk=pk)
-    try:
-        department.delete()
-        messages.success(request, f'{department.name} deleted')
-    except Exception as err:
-        messages.error(request, err)
-        return redirect('dashboard:department_detail', pk=pk)
-    return redirect('dashboard:department_list')
 
 
 def add_doctor(request):
@@ -247,7 +184,6 @@ def delete_doctor_experience(request, pk):
 
 
 def schedules(request, slug):
-    active_page = 'schedule'
     doctor = get_object_or_404(Doctor, slug=slug)
     start_date = datetime.date.today()
     end_date = start_date + datetime.timedelta(days=30)
@@ -257,15 +193,14 @@ def schedules(request, slug):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
-        'active_page': active_page,
+        'active_page': 'schedule',
         'doctor': doctor,
         'page_obj': page_obj
     }
-
     return render(request, 'dashboard/doctors/schedules.html', context)
 
 
-def search_schedule_day(request, slug):
+def get_schedule_day(request, slug):
     doctor = get_object_or_404(Doctor, slug=slug)
     if request.method == 'POST':
         str_date = request.POST.get('date')
@@ -282,6 +217,7 @@ def schedule_list(request, slug, year, month, day):
     qs = Schedule.objects.filter(doctor=doctor, date=date).order_by('start_from')
     context['schedules'] = qs
     context['active_page'] = 'schedule'
+    context['date'] = date
     return render(request, 'dashboard/doctors/schedule-list.html', context)
 
 
@@ -306,7 +242,6 @@ def edit_schedule(request, pk):
     date = schedule.date
     qs = Schedule.objects.filter(doctor=doctor, date=date)
     context = {'doctor': doctor, 'date': date, 'schedules': qs, 'action': action, 'active_page': 'schedule'}
-
     if request.method == 'POST':
         form = ScheduleForm(request.POST, instance=schedule)
         context['form'] = form
@@ -326,22 +261,97 @@ def delete_schedule(request, pk):
     date = schedule.date
     try:
         schedule.delete()
+        messages.success(request, 'График успешно удалено')
         return redirect('dashboard:day_schedule_list', slug=doctor.slug, year=date.year, month=date.month, day=date.day)
-    except Exception as err:
-        messages.warning(request, err)
+    except Exception:
+        messages.warning(request, 'График не может быть удален')
     return redirect('dashboard:day_schedule_list', slug=doctor.slug, year=date.year, month=date.month, day=date.day)
 
 
-def appointments(request, slug):
+def doctor_appointments(request, slug):
     context = {}
     doctor = get_object_or_404(Doctor, slug=slug)
+    qs = doctor.appointments.filter(schedule__date__gte=datetime.date.today()). \
+        order_by('schedule__date', 'schedule__start_from')
+    if request.method == 'POST':
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        if start_date and end_date:
+            qs = doctor.appointments.filter(schedule__date__range=[start_date, end_date]).order_by(
+                'schedule__date', 'schedule__start_from')
+        if start_date and not end_date:
+            qs = doctor.appointments.filter(schedule__date__gte=start_date).order_by(
+                'schedule__date', 'schedule__start_from')
+        if not start_date and end_date:
+            qs = doctor.appointments.filter(schedule__date__lte=end_date).order_by(
+                'schedule__date', 'schedule__start_from')
+    paginator = Paginator(qs, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context['page_obj'] = page_obj
     context['doctor'] = doctor
     context['active_page'] = 'appointments_page'
+    return render(request, 'dashboard/doctors/doctor-appointments.html', context)
+
+
+def appointments(request):
+    context = {}
+    qs = Appointment.objects.filter(schedule__date__gte=datetime.date.today())
+    if request.method == 'POST':
+        data = request.POST
+        doctor_name = data.get('doctor_name')
+        patient_name = data.get('patient_name')
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+        if start_date and end_date:
+            qs = Appointment.objects.filter(doctor__slug__icontains=doctor_name,
+                                            user__patient__first_name__icontains=patient_name,
+                                            schedule__date__range=[start_date, end_date])
+        elif start_date and not end_date:
+            qs = Appointment.objects.filter(doctor__slug__icontains=doctor_name,
+                                            user__patient__first_name__icontains=patient_name,
+                                            schedule__date__gte=start_date)
+        elif not start_date and end_date:
+            qs = Appointment.objects.filter(doctor__slug__icontains=doctor_name,
+                                            user__patient__first_name__icontains=patient_name,
+                                            schedule__date__lte=end_date)
+        else:
+            qs = Appointment.objects.filter(doctor__slug__icontains=doctor_name,
+                                            user__patient__first_name__icontains=patient_name)
+            context['page_obj'] = qs.order_by('schedule__date', 'schedule__start_from')
+        return render(request, 'dashboard/doctors/appointments.html', context)
+
+    paginator = Paginator(qs.order_by('schedule__date', 'schedule__start_from'), 50)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {'page_obj': page_obj}
     return render(request, 'dashboard/doctors/appointments.html', context)
 
 
+def search_schedule(request):
+    context = {}
+    doctors_objects = Doctor.objects.all()
+    context['doctors'] = doctors_objects
+    schedule_objects = None
+    if request.method == 'POST':
+        doctor_slug = request.POST.get('doctor')
+        date = request.POST.get('date')
+        doctor = get_object_or_404(Doctor, slug=doctor_slug)
+        schedule_objects = Schedule.objects.filter(
+            doctor=doctor, date=date, appointment=None, date__gte=datetime.date.today()
+        )
+    context['schedules'] = schedule_objects
+    return render(request, 'dashboard/doctors/add-appointment.html', context)
+
+
 def make_appointment(request):
-    pass
+    if request.method == 'POST':
+        schedule_pk = int(request.POST.get('schedule'))
+        schedule = get_object_or_404(Schedule, pk=schedule_pk)
+        appointment = Appointment(user=request.user, schedule=schedule, doctor=schedule.doctor)
+        appointment.save()
+        return redirect('dashboard:appointments')
+    return redirect('dashboard:search_schedule')
 
 
 def specialities(request):

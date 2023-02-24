@@ -1,5 +1,6 @@
 {% extends 'dashboard/doctors/profile-layout.html' %}
 {% block profile_content %}
+{% load static %}
 
 <div class="content">
     <div class="row">
@@ -73,7 +74,7 @@
         <div class="col-12 col-md-6 col-lg-8 col-xl-8">
             <div class="card">
                 <div class="card-header">
-                    <h4 class="card-title d-inline-block">Сегодняшнее Расписание</h4> <a href="{% url 'dashboard:appointments' slug=doctor.slug %}"
+                    <h4 class="card-title d-inline-block">Сегодняшнее Расписание</h4> <a href="{% url 'dashboard:doctor_appointments' slug=doctor.slug %}"
                                                                                          class="btn btn-primary float-right">Посмотреть все</a>
                 </div>
                 <div class="card-body p-0">
@@ -120,7 +121,7 @@
                         <li>
                             <div class="contact-cont">
                                 <div class="float-left user-img m-r-10">
-                                    <a href="profile.html" title="John Doe"><img src="assets/img/user.jpg" alt=""
+                                    <a href="profile.html" title="John Doe"><img src="{% static 'dashboard/assets/img/user.jpg' %}" alt=""
                                                                                  class="w-40 rounded-circle"><span
                                             class="status online"></span></a>
                                 </div>
@@ -133,7 +134,7 @@
                         <li>
                             <div class="contact-cont">
                                 <div class="float-left user-img m-r-10">
-                                    <a href="profile.html" title="Richard Miles"><img src="assets/img/user.jpg"
+                                    <a href="profile.html" title="Richard Miles"><img src="{% static 'dashboard/assets/img/user.jpg' %}"
                                                                                       alt=""
                                                                                       class="w-40 rounded-circle"><span
                                             class="status offline"></span></a>
@@ -147,7 +148,7 @@
                         <li>
                             <div class="contact-cont">
                                 <div class="float-left user-img m-r-10">
-                                    <a href="profile.html" title="John Doe"><img src="assets/img/user.jpg" alt=""
+                                    <a href="profile.html" title="John Doe"><img src="{% static 'dashboard/assets/img/user.jpg' %}" alt=""
                                                                                  class="w-40 rounded-circle"><span
                                             class="status away"></span></a>
                                 </div>
@@ -160,7 +161,7 @@
                         <li>
                             <div class="contact-cont">
                                 <div class="float-left user-img m-r-10">
-                                    <a href="profile.html" title="Richard Miles"><img src="assets/img/user.jpg"
+                                    <a href="profile.html" title="Richard Miles"><img src="{% static 'dashboard/assets/img/user.jpg' %}"
                                                                                       alt=""
                                                                                       class="w-40 rounded-circle"><span
                                             class="status online"></span></a>
@@ -174,7 +175,7 @@
                         <li>
                             <div class="contact-cont">
                                 <div class="float-left user-img m-r-10">
-                                    <a href="profile.html" title="John Doe"><img src="assets/img/user.jpg" alt=""
+                                    <a href="profile.html" title="John Doe"><img src="{% static 'dashboard/assets/img/user.jpg' %}" alt=""
                                                                                  class="w-40 rounded-circle"><span
                                             class="status offline"></span></a>
                                 </div>
@@ -187,7 +188,7 @@
                         <li>
                             <div class="contact-cont">
                                 <div class="float-left user-img m-r-10">
-                                    <a href="profile.html" title="Richard Miles"><img src="assets/img/user.jpg"
+                                    <a href="profile.html" title="Richard Miles"><img src="{% static 'dashboard/assets/img/user.jpg' %}"
                                                                                       alt=""
                                                                                       class="w-40 rounded-circle"><span
                                             class="status away"></span></a>
@@ -220,7 +221,7 @@
                             <tbody>
                             <tr>
                                 <td>
-                                    <img width="28" height="28" class="rounded-circle" src="assets/img/user.jpg"
+                                    <img width="28" height="28" class="rounded-circle" src="{% static 'dashboard/assets/img/user.jpg' %}"
                                          alt="">
                                     <h2>John Doe</h2>
                                 </td>
