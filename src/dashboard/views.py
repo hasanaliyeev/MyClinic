@@ -6,8 +6,8 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 
-from doctors.models import  Doctor, Education, Experience, Schedule, Speciality, Appointment
-from .forms import  DoctorForm, DoctorEducationForm, DoctorExperienceForm, ScheduleForm, SpecialityForm
+from doctors.models import Doctor, Education, Experience, Schedule, Speciality, Appointment
+from .forms import DoctorForm, DoctorEducationForm, DoctorExperienceForm, ScheduleForm, SpecialityForm
 
 
 def func():
@@ -46,11 +46,17 @@ def doctor_profile(request, slug):
 
 
 def doctors(request):
+    speciality_list = Speciality.objects.all()
     doctors_list = Doctor.objects.all()
+    if request.method == 'POST':
+        data = request.POST
+        speciality = data.get('speciality')
+        doctor_name = data.get('doctor_name')
+        doctors_list = Doctor.objects.filter(speciality__id__contains=speciality, first_name__icontains=doctor_name)
     paginator = Paginator(doctors_list, 16)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    context = {'page_obj': page_obj}
+    context = {'page_obj': page_obj, 'specialities': speciality_list}
     return render(request, 'dashboard/doctors/doctors.html', context)
 
 
@@ -105,13 +111,12 @@ def add_doctor_education(request, slug):
     if request.method == 'POST':
         data = request.POST
         institution = data.get('institution')
-        subject = data.get('subject')
+        faculty = data.get('faculty')
         starting_date = data.get('starting_date')
         complete_date = data.get('complete_date')
-        degree = data.get('degree')
         grade = data.get('grade')
-        education = Education(institution=institution, subject=subject, starting_date=starting_date,
-                              complete_date=complete_date, degree=degree, grade=grade, doctor=doctor)
+        education = Education(institution=institution, faculty=faculty, starting_date=starting_date,
+                              complete_date=complete_date, grade=grade, doctor=doctor)
         education.save()
         messages.success(request, 'Education added')
         return redirect('dashboard:edit_doctor_profile', slug=slug)
@@ -228,8 +233,8 @@ def add_schedule(request, slug, year, month, day):
         data = request.POST
         start_from = data.get('start_from')
         finish_by = data.get('finish_by')
-        is_active = data.get('is_active')
-        schedule = Schedule(doctor=doctor, date=date, start_from=start_from, finish_by=finish_by, is_active=is_active)
+        price = data.get('price')
+        schedule = Schedule(doctor=doctor, date=date, start_from=start_from, finish_by=finish_by, price=price)
         schedule.save()
         return redirect('dashboard:day_schedule_list', slug=doctor.slug, year=date.year, month=date.month, day=date.day)
     return redirect('dashboard:day_schedule_list', slug=doctor.slug, year=date.year, month=date.month, day=date.day)
@@ -273,18 +278,6 @@ def doctor_appointments(request, slug):
     doctor = get_object_or_404(Doctor, slug=slug)
     qs = doctor.appointments.filter(schedule__date__gte=datetime.date.today()). \
         order_by('schedule__date', 'schedule__start_from')
-    if request.method == 'POST':
-        start_date = request.POST.get('start_date')
-        end_date = request.POST.get('end_date')
-        if start_date and end_date:
-            qs = doctor.appointments.filter(schedule__date__range=[start_date, end_date]).order_by(
-                'schedule__date', 'schedule__start_from')
-        if start_date and not end_date:
-            qs = doctor.appointments.filter(schedule__date__gte=start_date).order_by(
-                'schedule__date', 'schedule__start_from')
-        if not start_date and end_date:
-            qs = doctor.appointments.filter(schedule__date__lte=end_date).order_by(
-                'schedule__date', 'schedule__start_from')
     paginator = Paginator(qs, 20)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -300,58 +293,62 @@ def appointments(request):
     if request.method == 'POST':
         data = request.POST
         doctor_name = data.get('doctor_name')
-        patient_name = data.get('patient_name')
+        patient = data.get('patient')
         start_date = data.get('start_date')
         end_date = data.get('end_date')
+        status = data.get('status')
+        context = {
+            'patient': patient,
+            'doctor_name': doctor_name,
+            'start_date': start_date,
+            'end_date': end_date,
+            'status': status
+        }
         if start_date and end_date:
-            qs = Appointment.objects.filter(doctor__slug__icontains=doctor_name,
-                                            user__patient__first_name__icontains=patient_name,
-                                            schedule__date__range=[start_date, end_date])
+            qs = Appointment.objects.filter(doctor__first_name__icontains=doctor_name,
+                                            patient__icontains=patient,
+                                            schedule__date__range=[start_date, end_date], status__icontains=status)
         elif start_date and not end_date:
-            qs = Appointment.objects.filter(doctor__slug__icontains=doctor_name,
-                                            user__patient__first_name__icontains=patient_name,
-                                            schedule__date__gte=start_date)
+            qs = Appointment.objects.filter(doctor__first_name__icontains=doctor_name,
+                                            patient__icontains=patient,
+                                            schedule__date__gte=start_date, status__icontains=status)
         elif not start_date and end_date:
-            qs = Appointment.objects.filter(doctor__slug__icontains=doctor_name,
-                                            user__patient__first_name__icontains=patient_name,
-                                            schedule__date__lte=end_date)
+            qs = Appointment.objects.filter(doctor__first_name__icontains=doctor_name,
+                                            patient__icontains=patient,
+                                            schedule__date__lte=end_date, status__icontains=status)
         else:
-            qs = Appointment.objects.filter(doctor__slug__icontains=doctor_name,
-                                            user__patient__first_name__icontains=patient_name)
-            context['page_obj'] = qs.order_by('schedule__date', 'schedule__start_from')
+            qs = Appointment.objects.filter(doctor__first_name__icontains=doctor_name, patient__icontains=patient,
+                                            status__icontains=status)
+        context['page_obj'] = qs.order_by('schedule__date', 'schedule__start_from')
         return render(request, 'dashboard/doctors/appointments.html', context)
 
     paginator = Paginator(qs.order_by('schedule__date', 'schedule__start_from'), 50)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    context = {'page_obj': page_obj}
+    context['page_obj'] = page_obj
     return render(request, 'dashboard/doctors/appointments.html', context)
 
 
-def search_schedule(request):
-    context = {}
-    doctors_objects = Doctor.objects.all()
-    context['doctors'] = doctors_objects
-    schedule_objects = None
+def make_appointment(request, pk):
+    schedule = get_object_or_404(Schedule, pk=pk)
+    if not schedule.is_active:
+        return redirect('dashboard:day_schedule_list', slug=schedule.doctor.slug, year=schedule.date.year,
+                        month=schedule.date.month, day=schedule.date.day)
     if request.method == 'POST':
-        doctor_slug = request.POST.get('doctor')
-        date = request.POST.get('date')
-        doctor = get_object_or_404(Doctor, slug=doctor_slug)
-        schedule_objects = Schedule.objects.filter(
-            doctor=doctor, date=date, appointment=None, date__gte=datetime.date.today()
-        )
-    context['schedules'] = schedule_objects
-    return render(request, 'dashboard/doctors/add-appointment.html', context)
-
-
-def make_appointment(request):
-    if request.method == 'POST':
-        schedule_pk = int(request.POST.get('schedule'))
-        schedule = get_object_or_404(Schedule, pk=schedule_pk)
-        appointment = Appointment(user=request.user, schedule=schedule, doctor=schedule.doctor)
+        data = request.POST
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+        middle_name = data.get('middle_name')
+        patient = first_name + ' ' + last_name + ' ' + middle_name
+        phone = data.get('phone')
+        appointment = Appointment(doctor=schedule.doctor, user=request.user, patient=patient, phone_number=phone,
+                                  schedule=schedule, date=schedule.date, start_from=schedule.start_from,
+                                  finish_by=schedule.finish_by, price=schedule.price, status='В ожидании')
         appointment.save()
+        schedule.is_active = False
+        schedule.save()
         return redirect('dashboard:appointments')
-    return redirect('dashboard:search_schedule')
+    return render(request, 'dashboard/doctors/add-appointment.html')
 
 
 def specialities(request):

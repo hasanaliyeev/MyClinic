@@ -9,27 +9,34 @@
             <div class="col-sm-4 col-3">
                 <h4 class="page-title">Расписания</h4>
             </div>
-            <div class="col-sm-8 col-9 text-right m-b-20">
-                <a href="{% url 'dashboard:make_appointment' %}" class="btn btn btn-primary btn-rounded float-right"><i
-                        class="fa fa-plus"></i> Добавить расписание</a>
-            </div>
 
             <div class="col-sm-12">
                 <form action="" method="post">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-md-2">
-                            <input type="search" name="doctor_name" class="form-control" placeholder="Врач">
+                            <input type="search" name="patient" class="form-control" placeholder="Пациент" value="{{patient}}">
                         </div>
                         <div class="col-md-2">
-                            <input type="search" name="patient_name" class="form-control" placeholder="Пациент">
+                            <input type="search" name="doctor_name" class="form-control" placeholder="Врач" value="{{doctor_name}}">
                         </div>
                         <div class="col-md-2">
-                            <input type="date" name="start_date" class="form-control">
+                            <input type="date" name="start_date" class="form-control" value="{{start_date}}">
                         </div>
                         <div class="col-md-2">
-                            <input type="date" name="end_date" class="form-control">
+                            <input type="date" name="end_date" class="form-control" value="{{end_date}}">
                         </div>
+                        <div class="col-md-2">
+                            <select name="status" class="form-control">
+                                <option value="{{status}}">------</option>
+                                <option value="">Все</option>
+                                <option value="Завершенный">Завершенный</option>
+                                <option value="В ожидании">В ожидании</option>
+                                <option value="Отменено">Отменено</option>
+                            </select>
+
+                        </div>
+                        
                         <div class="col-md-2">
                             <button type="submit" class="btn btn-primary btn-lg">Поиск</button>
                         </div>
@@ -49,32 +56,23 @@
                             <th>ФИО доктора</th>
                             <th>Дата</th>
                             <th>Время</th>
+                            <th>Цена</th>
                             <th>Статус</th>
-                            <th class="text-right">Действие</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for ap in page_obj %}
+                        {% for appointment in page_obj %}
                         <tr>
                             <td><img width="28" height="28" src="{% static 'dashboard/assets/img/user.jpg' %}"
                                      class="rounded-circle m-r-5"
-                                     alt=""> {{ap.user.patient}}
+                                     alt=""> {{appointment.patient}}
                             </td>
-                            <td>{{ap.schedule.doctor}}</td>
-                            <td>{{ap.schedule.date}}</td>
-                            <td>{{ap.schedule.start_from}} - {{ap.schedule.finish_by}}</td>
-                            <td><span class="custom-badge status-red">Status</span></td>
-                            <td class="text-right">
-                                <div class="dropdown dropdown-action">
-                                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                                       aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="edit-appointment.html"><i
-                                                class="fa fa-pencil m-r-5"></i> Изменить</a>
-                                        <a class="dropdown-item" href="#" data-toggle="modal"
-                                           data-target="#delete_appointment"><i class="fa fa-trash-o m-r-5"></i> Удалить</a>
-                                    </div>
-                                </div>
+                            <td>{{appointment.doctor}}</td>
+                            <td>{{appointment.date}}</td>
+                            <td>{{appointment.start_from}} - {{appointment.finish_by}}</td>
+                            <td>{{appointment.price}}</td>
+                            <td><span
+                                    class="custom-badge {% if appointment.status == 'Завершенный' %}badge-success{% elif appointment.status == 'Отменено' %}badge-danger {% else %}badge-warning{% endif %}">{{appointment.status}}</span>
                             </td>
                         </tr>
                         {% endfor %}

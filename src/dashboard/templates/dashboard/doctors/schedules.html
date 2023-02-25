@@ -20,7 +20,7 @@
                                    required>
                         </div>
                         <div class="col-md-2 text-right">
-                            <button type="submit" class="btn btn-success btn-lg">Создать график</button>
+                            <button type="submit" class="btn btn-success btn-lg">Создать / Найти</button>
                         </div>
 
                     </div>
@@ -37,8 +37,9 @@
                         <tr>
                             <th>Дата</th>
                             <th>Время</th>
-                            <th></th>
+                            <th>Цена</th>
                             <th>Статус</th>
+                            <th></th>
                             <th class="text-right">Действие</th>
                         </tr>
                         </thead>
@@ -47,12 +48,16 @@
                         <tr>
                             <td>{{schedule.date}}</td>
                             <td>{{schedule.start_from}} - {{schedule.finish_by}}</td>
-                            <td><span class="custom-badge status-{% if schedule.is_active %}green{% else %}red{% endif %}">{% if schedule.is_active %}Active{% else %}Inactive{% endif %}</span>
-                            </td>
+                            <td><span style="color:green">{{schedule.price}}</span></td>
 
                             <td><span
-                                    class="badge bg-{% if schedule.appointment %}warning text-dark{% else %}success{% endif %}">{% if schedule.appointment %}Занятый{% else %}Свободный{% endif %}</span>
+                                    class="badge bg-{% if not schedule.is_active %}warning text-dark{% else %}success{% endif %}">{% if not schedule.is_active %}Занятый{% else %}Свободный{% endif %}</span>
                             </td>
+                            <td><a href="{% url 'dashboard:make_appointment' pk=schedule.pk %}">
+                                <button type="submit" class="btn btn-outline-primary btn-sm">Создать
+                                    расписание
+                                </button>
+                            </a></td>
                             <td class="text-right"><a class=""
                                                       href="{% url 'dashboard:edit_schedule' pk=schedule.pk %}"><i
                                     class="fa fa-pencil m-r-5"></i> Редактировать</a>

@@ -7,15 +7,22 @@ from django.utils.text import slugify
 from other import utils
 
 GENDER_SELECT = (
-    ('Male', 'Male'),
-    ('Female', 'Female'))
+    ('Male', 'Мужчина'),
+    ('Female', 'Женщина'))
+
+
+class Speciality(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Doctor(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, blank=True, null=True)
-    speciality = models.CharField(max_length=255)
+    speciality = models.ForeignKey(Speciality, on_delete=models.PROTECT, related_name='doctors')
     birth_date = models.DateField()
     phone = models.CharField(max_length=255, unique=True)
     email = models.EmailField(unique=True)
@@ -69,6 +76,7 @@ class Schedule(models.Model):
     date = models.DateField()
     start_from = models.TimeField()
     finish_by = models.TimeField()
+    price = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -103,6 +111,7 @@ class Appointment(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.PROTECT, related_name='appointments')
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='appointments')
     patient = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=30)
     schedule = models.ForeignKey(Schedule, on_delete=models.PROTECT, related_name='appointment')
     price = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
     date = models.DateField()
@@ -113,10 +122,3 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f'{self.doctor}'
-
-
-class Speciality(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return self.name

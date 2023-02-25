@@ -3,303 +3,124 @@
 
 {% block content %}
 <div class="content">
-    <div class="row">
-        <div class="col-sm-4 col-3">
-            <h4 class="page-title">Врачи</h4>
-        </div>
-        <div class="col-sm-8 col-9 text-right m-b-20">
-            <a href="{% url 'dashboard:add_doctor' %}" class="btn btn-primary btn-rounded float-right"><i
-                    class="fa fa-plus"></i>
-                Добавить врача</a>
-        </div>
-    </div>
-    <div class="row doctor-grid">
-
-        {% for doctor in page_obj %}
-        <div class="col-md-4 col-sm-4  col-lg-3">
-            <div class="profile-widget">
-                <div class="doctor-img">
-                    <a class="avatar" href="{% url 'dashboard:doctor_profile' slug=doctor.slug %}"><img alt=""
-                                                                                                        src="{{ doctor.image.url }}"></a>
-                </div>
-                <div class="dropdown profile-action">
-                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                       aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="{% url 'dashboard:edit_doctor_profile' slug=doctor.slug %}"><i
-                                class="fa fa-pencil m-r-5"></i> Изменить</a>
-                        <a class="dropdown-item" href=""
-                           data-toggle="modal" data-target="#delete_doctor"><i
-                                class="fa fa-trash-o m-r-5"></i> Удалить</a>
-                    </div>
-                </div>
-                <h4 class="doctor-name text-ellipsis"><a href="{% url 'dashboard:doctor_profile' slug=doctor.slug %}">{{doctor}}</a>
-                </h4>
-                <div class="doc-prof">{{doctor.speciality}}</div>
-                <div class="user-country">
-                    <i class="fa fa-map-marker"></i> {{doctor.state}}, {{doctor.city}}
-                </div>
+    <div class="card-box">
+        <div class="row">
+            <div class="col-sm-4 col-3">
+                <h4 class="page-title">Врачи</h4>
+            </div>
+            <div class="col-sm-8 col-9 text-right m-b-20">
+                <a href="{% url 'dashboard:add_doctor' %}" class="btn btn-primary btn-rounded float-right"><i
+                        class="fa fa-plus"></i>
+                    Добавить врача</a>
             </div>
         </div>
-        <div id="delete_doctor" class="modal fade delete-modal" role="dialog">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body text-center">
-                        <img src="{% static 'dashboard/assets/img/sent.png' %}" alt="" width="50" height="46">
-                        <h3>Are you sure want to delete this Doctor?</h3>
-                        <div class="m-t-20">
-                            <a href="" class="btn btn-white" data-dismiss="modal">Close</a>
-                            <a href="{% url 'dashboard:delete_doctor' slug=doctor.slug %}" data-toggle="modal">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </a>
+        <br>
+
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="row">
+
+                <div class="col-md-2">
+                    <input type="search" name="doctor_name" class="form-control" placeholder="Врач"
+                           value="{{doctor_name}}">
+                </div>
+
+                <div class="col-md-2">
+                    <select name="speciality" class="form-control">
+                        <option value="">------</option>
+                        {% for speciality in specialities %}
+                        <option value="{{speciality.pk}}">{{speciality}}</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary btn-lg">Поиск</button>
+                </div>
+            </div>
+        </form>
+
+        <hr>
+
+
+        <div class="row doctor-grid">
+
+            {% for doctor in page_obj %}
+            <div class="col-md-4 col-sm-4  col-lg-3">
+                <div class="profile-widget">
+                    <div class="doctor-img">
+                        <a class="avatar" href="{% url 'dashboard:doctor_profile' slug=doctor.slug %}"><img alt=""
+                                                                                                            src="{{ doctor.image.url }}"></a>
+                    </div>
+                    <div class="dropdown profile-action">
+                        <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
+                           aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item"
+                               href="{% url 'dashboard:edit_doctor_profile' slug=doctor.slug %}"><i
+                                    class="fa fa-pencil m-r-5"></i> Изменить</a>
+                            <a class="dropdown-item" href=""
+                               data-toggle="modal" data-target="#delete_doctor"><i
+                                    class="fa fa-trash-o m-r-5"></i> Удалить</a>
+                        </div>
+                    </div>
+                    <h4 class="doctor-name text-ellipsis"><a
+                            href="{% url 'dashboard:doctor_profile' slug=doctor.slug %}">{{doctor}}</a>
+                    </h4>
+                    <div class="doc-prof">{{doctor.speciality}}</div>
+                    <div class="user-country">
+                        <i class="fa fa-map-marker"></i> {{doctor.state}}, {{doctor.city}}
+                    </div>
+                </div>
+            </div>
+            <div id="delete_doctor" class="modal fade delete-modal" role="dialog">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <img src="{% static 'dashboard/assets/img/sent.png' %}" alt="" width="50" height="46">
+                            <h3>Are you sure want to delete this Doctor?</h3>
+                            <div class="m-t-20">
+                                <a href="" class="btn btn-white" data-dismiss="modal">Close</a>
+                                <a href="{% url 'dashboard:delete_doctor' slug=doctor.slug %}" data-toggle="modal">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        {% endfor %}
-
-    </div>
-
-    <nav aria-label="Page navigation example">
-        <ul class="pagination pagination-sm">
-            {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            {% endif %}
-
-            {% for page in page_obj.paginator.page_range %}
-            <li class="page-item {% if page == page_obj.number %}active{% endif %}" aria-current="page">
-                <a class="page-link" href="?page={{page}}">{{ page }}</a>
-            </li>
             {% endfor %}
-
-            <li class="page-item">
-                {% if page_obj.has_next %}
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-                {% endif %}
-            </li>
-        </ul>
-    </nav>
-
-</div>
-<div class="notification-box">
-    <div class="msg-sidebar notifications msg-noti">
-        <div class="topnav-dropdown-header">
-            <span>Messages</span>
         </div>
-        <div class="drop-scroll msg-list-scroll" id="msg_list">
-            <ul class="list-box">
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item">
-                            <div class="list-left">
-                                <span class="avatar">R</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author">Richard Miles </span>
-                                <span class="message-time">12:28 AM</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
+        <hr>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination pagination-sm">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item new-message">
-                            <div class="list-left">
-                                <span class="avatar">J</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author">John Doe</span>
-                                <span class="message-time">1 Aug</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
-                    </a>
+                {% endif %}
+
+                {% for page in page_obj.paginator.page_range %}
+                <li class="page-item {% if page == page_obj.number %}active{% endif %}" aria-current="page">
+                    <a class="page-link" href="?page={{page}}">{{ page }}</a>
                 </li>
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item">
-                            <div class="list-left">
-                                <span class="avatar">T</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author"> Tarah Shropshire </span>
-                                <span class="message-time">12:28 AM</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
+                {% endfor %}
+
+                <li class="page-item">
+                    {% if page_obj.has_next %}
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
                     </a>
-                </li>
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item">
-                            <div class="list-left">
-                                <span class="avatar">M</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author">Mike Litorus</span>
-                                <span class="message-time">12:28 AM</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item">
-                            <div class="list-left">
-                                <span class="avatar">C</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author"> Catherine Manseau </span>
-                                <span class="message-time">12:28 AM</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item">
-                            <div class="list-left">
-                                <span class="avatar">D</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author"> Domenic Houston </span>
-                                <span class="message-time">12:28 AM</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item">
-                            <div class="list-left">
-                                <span class="avatar">B</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author"> Buster Wigton </span>
-                                <span class="message-time">12:28 AM</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item">
-                            <div class="list-left">
-                                <span class="avatar">R</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author"> Rolland Webber </span>
-                                <span class="message-time">12:28 AM</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item">
-                            <div class="list-left">
-                                <span class="avatar">C</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author"> Claire Mapes </span>
-                                <span class="message-time">12:28 AM</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item">
-                            <div class="list-left">
-                                <span class="avatar">M</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author">Melita Faucher</span>
-                                <span class="message-time">12:28 AM</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item">
-                            <div class="list-left">
-                                <span class="avatar">J</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author">Jeffery Lalor</span>
-                                <span class="message-time">12:28 AM</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item">
-                            <div class="list-left">
-                                <span class="avatar">L</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author">Loren Gatlin</span>
-                                <span class="message-time">12:28 AM</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="chat.html">
-                        <div class="list-item">
-                            <div class="list-left">
-                                <span class="avatar">T</span>
-                            </div>
-                            <div class="list-body">
-                                <span class="message-author">Tarah Shropshire</span>
-                                <span class="message-time">12:28 AM</span>
-                                <div class="clearfix"></div>
-                                <span class="message-content">Lorem ipsum dolor sit amet, consectetur adipiscing</span>
-                            </div>
-                        </div>
-                    </a>
+                    {% endif %}
                 </li>
             </ul>
-        </div>
-        <div class="topnav-dropdown-footer">
-            <a href="chat.html">See all messages</a>
-        </div>
+        </nav>
     </div>
 </div>
-
-
 {% endblock %}
 
 
